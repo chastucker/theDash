@@ -1,0 +1,42 @@
+//🧩Don't Edit this file.✨Generated in Wed Jun 19 2024 01:53:28 GMT-0400 (Eastern Daylight Time)✨
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model Patient {
+  id String @id @default(uuid())
+
+  firstName  String @map("first_name")
+  middleName String @map("middle_name")
+  lastName   String @map("last_name")
+  userId     String @map("user_id")
+
+  status       String @map("status")
+  customFields Json   @map("custom_feilds")
+
+  addresses Address[]
+
+  @@map("patient")
+}
+
+model Address {
+  id             String  @id @default(uuid())
+  currentAddress Boolean @default(false)
+
+  street String
+  city   String
+  state  String
+  zip    String
+
+  patient   Patient @relation(fields: [patientId], references: [id])
+  patientId String
+
+  @@map("address")
+}
