@@ -1,10 +1,11 @@
-import { server } from './src/app';
+import { getServer } from './src/app';
 import fs from 'fs';
 import orval from 'orval';
 
 const OPENAAPI_PATH = './openapi.temp.json';
 
 export async function generateClient() {
+  const server = await getServer();
   await server.ready();
   const openapiSpec = server.swagger();
   await server.close();
@@ -23,6 +24,12 @@ export async function generateClient() {
       target: './client',
       mode: 'tags-split',
       prettier: true,
+      override: {
+        mutator: {
+          path: '../utils/axiosInstance.ts',
+          name: 'useCustomInstance',
+        },
+      },
     },
     hooks: {
       afterAllFilesWrite: ['prettier --write', 'eslint --fix ../web/src'],

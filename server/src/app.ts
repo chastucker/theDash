@@ -11,41 +11,56 @@ import {
 } from 'fastify-type-provider-zod';
 import { routes } from './routes';
 
-export const server = fastify();
+export async function getServer() {
+  const server = fastify();
 
-server.register(cors, {
-  origin: (origin, cb) => {
-    const hostname = origin ? new URL(origin).hostname : '';
-    if (hostname === 'localhost') {
+  await server.register(cors, {
+    origin: (origin, cb) => {
+      const hostname = origin ? new URL(origin).hostname : '';
+
+      if (hostname === 'localhost') {
+        cb(null, true);
+        return;
+      }
       cb(null, true);
-      return;
-    }
-    cb(new Error('Not allowed'), false);
-  },
-});
-
-server.setValidatorCompiler(validatorCompiler);
-server.setSerializerCompiler(serializerCompiler);
-
-server.register(fastifySwagger, {
-  openapi: {
-    info: {
-      title: 'The Dash Backend',
-      description: 'The Dash Backend API',
-      version: '0.0.1',
+      // cb(new Error('Not allowed'), false);
     },
-    servers: [],
-  },
-
-  transform: jsonSchemaTransform,
-});
-
-server.register(fastifySwaggerUI, {
-  routePrefix: '/docs',
-});
-
-server.after(() => {
-  routes.forEach((route) => {
-    server.withTypeProvider<ZodTypeProvider>().route(route);
   });
-});
+
+  server.setValidatorCompiler(validatorCompiler);
+  server.setSerializerCompiler(serializerCompiler);
+
+  await server.register(fastifySwagger, {
+    openapi: {
+      info: {
+        title: 'The Dash Backend',
+        description: 'The Dash Backend API',
+        version: '0.0.1',
+      },
+      components: {
+        securitySchemes: {
+          bearerAuth: {
+            type: 'http',
+            scheme: 'bearer',
+            bearerFormat: 'JWT',
+          },
+        },
+      },
+      security: [{ bearerAuth: [] }],
+    },
+
+    transform: jsonSchemaTransform,
+  });
+
+  await server.register(fastifySwaggerUI, {
+    routePrefix: '/docs',
+  });
+
+  server.after(() => {
+    routes.forEach((route) => {
+      server.withTypeProvider<ZodTypeProvider>().route(route);
+    });
+  });
+
+  return server;
+}

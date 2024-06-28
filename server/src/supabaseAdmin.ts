@@ -25,3 +25,5 @@ export function getSupabaseUrl() {
   }
   throw new Error('SUPABASE_URL not defined');
 }
+
+export const supabaseAnon = createClient(getSupabaseUrl(), getSupabaseApiKey());

@@ -1,0 +1,56 @@
+model Patient {
+    id String @id @default(uuid())
+
+    firstName   String   @map("first_name")
+    middleName  String?  @map("middle_name")
+    lastName    String   @map("last_name")
+    status      String   @map("status")
+    dateOfBirth DateTime @map("date_of_birth")
+
+    userId              String               @map("user_id")
+    addresses           Address[]
+    patientCustomFields PatientCustomField[]
+
+    @@map("patient")
+}
+
+model Address {
+    id String @id @default(uuid())
+
+    street String
+    city   String
+    state  String
+    zip    String
+
+    patient   Patient @relation(fields: [patientId], references: [id], onDelete: Cascade)
+    patientId String
+
+    @@map("address")
+}
+
+model CustomField {
+    id String @id @default(uuid())
+
+    name         String
+    type         String
+    defaultValue String? @map("default_value")
+
+    userId              String               @map("user_id")
+    PatientCustomFeilds PatientCustomField[]
+
+    @@map("custom_fields")
+}
+
+model PatientCustomField {
+    id String @id @default(uuid())
+
+    value String? @map("value")
+
+    patientId     String
+    customFieldId String
+
+    patient     Patient     @relation(fields: [patientId], references: [id], onDelete: Cascade)
+    customField CustomField @relation(fields: [customFieldId], references: [id], onDelete: Cascade)
+
+    @@map("patient_custom_fields")
+}

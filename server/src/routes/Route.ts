@@ -1,14 +1,16 @@
 import { RouteOptions } from 'fastify';
 
-export type Route = {
-  method: 'GET' | 'POST' | 'PUT';
+type DefaultType = { P?: unknown; B?: unknown; R?: unknown };
+
+export type Route<T extends Partial<DefaultType> = DefaultType> = {
+  method: 'GET' | 'POST' | 'PUT' | 'DELETE';
   url: string;
   schema: {
     description: string;
     tags: string[];
-    params?: unknown;
-    body?: unknown;
-    response: unknown;
+    params?: T['P'];
+    body?: T['B'];
+    response: T['R'];
   };
   handler: RouteOptions['handler'];
 };

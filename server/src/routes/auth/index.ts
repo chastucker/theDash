@@ -1,2 +1,5 @@
-export { signIn } from './signIn';
-export { signUp } from './signUp';
+import { refresh } from './refresh';
+import { signIn } from './signIn';
+import { signUp } from './signUp';
+
+export const authRoutes = [refresh, signIn, signUp];

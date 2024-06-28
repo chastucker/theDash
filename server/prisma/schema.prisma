@@ -1,4 +1,4 @@
-//🧩Don't Edit this file.✨Generated in Wed Jun 19 2024 01:53:28 GMT-0400 (Eastern Daylight Time)✨
+//🧩Don't Edit this file.✨Generated in Thu Jun 27 2024 20:23:36 GMT-0400 (Eastern Daylight Time)✨
 
 generator client {
   provider = "prisma-client-js"
@@ -13,30 +13,56 @@ datasource db {
 model Patient {
   id String @id @default(uuid())
 
-  firstName  String @map("first_name")
-  middleName String @map("middle_name")
-  lastName   String @map("last_name")
-  userId     String @map("user_id")
+  firstName   String   @map("first_name")
+  middleName  String?  @map("middle_name")
+  lastName    String   @map("last_name")
+  status      String   @map("status")
+  dateOfBirth DateTime @map("date_of_birth")
 
-  status       String @map("status")
-  customFields Json   @map("custom_feilds")
-
-  addresses Address[]
+  userId              String               @map("user_id")
+  addresses           Address[]
+  patientCustomFields PatientCustomField[]
 
   @@map("patient")
 }
 
 model Address {
-  id             String  @id @default(uuid())
-  currentAddress Boolean @default(false)
+  id String @id @default(uuid())
 
   street String
   city   String
   state  String
   zip    String
 
-  patient   Patient @relation(fields: [patientId], references: [id])
+  patient   Patient @relation(fields: [patientId], references: [id], onDelete: Cascade)
   patientId String
 
   @@map("address")
+}
+
+model CustomField {
+  id String @id @default(uuid())
+
+  name         String
+  type         String
+  defaultValue String? @map("default_value")
+
+  userId              String               @map("user_id")
+  PatientCustomFeilds PatientCustomField[]
+
+  @@map("custom_fields")
+}
+
+model PatientCustomField {
+  id String @id @default(uuid())
+
+  value String? @map("value")
+
+  patientId     String
+  customFieldId String
+
+  patient     Patient     @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  customField CustomField @relation(fields: [customFieldId], references: [id], onDelete: Cascade)
+
+  @@map("patient_custom_fields")
 }
