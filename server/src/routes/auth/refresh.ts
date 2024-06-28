@@ -30,6 +30,7 @@ export const refresh: Route<{ P: z.infer<typeof body> }> = {
   handler: async (req, res) => {
     const { refreshToken } = req.body as { refreshToken: string };
     const supabaseClient = createClient(getSupabaseUrl(), getSupabaseAnonKey());
+
     const client = await supabaseClient.auth.refreshSession({
       refresh_token: refreshToken,
     });

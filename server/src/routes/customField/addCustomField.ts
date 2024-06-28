@@ -7,7 +7,7 @@ import { getUserId } from '../utils';
 const customFieldBody = z.object({
   name: z.string(),
   type: z.string(),
-  defaultValue: z.string().optional(),
+  defaultValue: z.string().optional().nullable(),
 });
 
 export const addCustomField: Route = {
