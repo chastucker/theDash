@@ -17,7 +17,7 @@ import type {
 } from "@tanstack/react-query";
 import { useCallback } from "react";
 import type {
-  GetGetPatients200Item,
+  GetGetPatients200,
   PostAddPatient200,
   PostAddPatientBody,
   PostRemovePatientBody,
@@ -104,7 +104,7 @@ export const usePostAddPatient = <
   return useMutation(mutationOptions);
 };
 export const useGetGetPatientsHook = () => {
-  const getGetPatients = useCustomInstance<GetGetPatients200Item[]>();
+  const getGetPatients = useCustomInstance<GetGetPatients200>();
 
   return useCallback(
     (signal?: AbortSignal) => {

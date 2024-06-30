@@ -41,33 +41,33 @@ AXIOS_INSTANCE.interceptors.response.use(
         window.location.href = "http://localhost:3000/login";
         return;
       }
-      console.log("got here 1");
 
-      const tokens = await axios.post(
-        "http://localhost:4000/refresh",
-        {
-          refreshToken,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-            accept: "application/json",
+      try {
+        const tokens = await axios.post(
+          "http://localhost:4000/refresh",
+          {
+            refreshToken,
           },
+          {
+            headers: {
+              "Content-Type": "application/json",
+              accept: "application/json",
+            },
+          }
+        );
+
+        if (tokens.status === 200) {
+          const { access_token, refresh_token } = tokens.data;
+          setCookie("access_token", access_token);
+          setCookie("refresh_token", refresh_token);
+          return axios(error.config);
         }
-      );
-      console.log(tokens);
-
-      if (tokens.status === 200) {
-        const { access_token, refresh_token } = tokens.data;
-        setCookie("access_token", access_token);
-        setCookie("refresh_token", refresh_token);
-        return axios(error.config);
+      } catch {
+        deleteCookie("access_token");
+        deleteCookie("refresh_token");
+        window.location.href = "http://localhost:3000/login";
+        return;
       }
-
-      deleteCookie("access_token");
-      deleteCookie("refresh_token");
-      window.location.href = "http://localhost:3000/login";
-      return;
     }
   }
 );

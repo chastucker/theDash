@@ -49,6 +49,7 @@ export function AddCustomFieldForm({ closeModal }: { closeModal: () => void }) {
     await queryClient.invalidateQueries({
       queryKey: getGetGetPatientsQueryKey(),
     });
+    closeModal();
   };
 
   const form = useForm<z.infer<typeof formSchema>>({
