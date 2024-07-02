@@ -14,10 +14,15 @@ import {
 } from "generated_client";
 import { MoreHorizontal } from "lucide-react";
 
-export function getColumns(
-  customFields: GetGetPatients200CustomFieldsItem[] | undefined,
-  deletePatientHandler: (id: string) => Promise<void>
-): ColumnDef<GetGetPatients200PatientsItem>[] {
+export function getColumns({
+  customFields,
+  deletePatientHandler,
+  editPatientHandler,
+}: {
+  customFields: GetGetPatients200CustomFieldsItem[] | undefined;
+  deletePatientHandler: (id: string) => Promise<void>;
+  editPatientHandler: (patient: GetGetPatients200PatientsItem) => void;
+}): ColumnDef<GetGetPatients200PatientsItem>[] {
   const customFieldsForTable: ColumnDef<GetGetPatients200PatientsItem>[] =
     customFields?.map((field, index) => {
       if (field.type === "date") {
@@ -25,9 +30,12 @@ export function getColumns(
           accessorKey: field.name,
           header: field.name,
           cell: ({ row }) => {
-            return new Date(
-              row.original.patientCustomFields[index].value ?? ""
-            ).toLocaleDateString();
+            if (row.original?.patientCustomFields[index]?.value) {
+              return new Date(
+                row.original.patientCustomFields[index].value
+              ).toLocaleDateString();
+            }
+            return "";
           },
         };
       } else if (field.type === "boolean") {
@@ -35,15 +43,21 @@ export function getColumns(
           accessorKey: field.name,
           header: field.name,
           cell: ({ row }) => {
-            return row.original.patientCustomFields[index].value
-              ? "true"
-              : "false";
+            if (row.original?.patientCustomFields[index]?.value) {
+              return row.original.patientCustomFields[index].value
+                ? "true"
+                : "false";
+            }
+            return "";
           },
         };
       } else {
         return {
           accessorKey: field.name,
           header: field.name,
+          cell: ({ row }) => {
+            return row.original?.patientCustomFields[index]?.value ?? "";
+          },
         };
       }
     }) ?? [];
@@ -97,11 +111,7 @@ export function getColumns(
               >
                 Delete Patient
               </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => {
-                  console.log("open the edit window");
-                }}
-              >
+              <DropdownMenuItem onClick={() => editPatientHandler(patient)}>
                 Edit Patient
               </DropdownMenuItem>
             </DropdownMenuContent>

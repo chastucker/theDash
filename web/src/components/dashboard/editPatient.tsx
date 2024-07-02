@@ -9,36 +9,31 @@ import {
   DialogTrigger,
 } from "components/ui/dialog";
 import { AddEditPatientForm } from "components/forms/AddEditPatientForm";
-import { GetGetPatients200CustomFieldsItem } from "generated_client";
+import {
+  GetGetPatients200CustomFieldsItem,
+  GetGetPatients200PatientsItem,
+} from "generated_client";
 
-export default function AddPatient({
+export default function EditPatient({
+  patient,
+  open,
+  closeModal,
   customFields,
 }: {
+  patient: GetGetPatients200PatientsItem | undefined;
+  open: boolean;
+  closeModal: () => void;
   customFields: GetGetPatients200CustomFieldsItem[];
 }) {
-  const [open, setOpen] = useState(false);
-
-  const closeModal = () => {
-    setOpen(false);
-  };
-
-  const openModal = () => {
-    setOpen(true);
-  };
-
   return (
     <Dialog open={open}>
-      <DialogTrigger onClick={openModal}>
-        <div className="border p-2 m-2 bg-black text-white rounded-xl">
-          Add Patient
-        </div>
-      </DialogTrigger>
       <DialogContent className="overflow-scroll max-h-[50%]">
         <DialogHeader>
-          <DialogTitle>Add Patient</DialogTitle>
-          <DialogDescription>Add a patient to the group</DialogDescription>
+          <DialogTitle>Edit Patient</DialogTitle>
+          <DialogDescription>Edit a patient to the group</DialogDescription>
         </DialogHeader>
         <AddEditPatientForm
+          patient={patient}
           customFields={customFields}
           closeModal={closeModal}
         />

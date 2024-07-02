@@ -24,15 +24,34 @@ export const addPatient: Route = {
       return;
     }
 
-    const {
-      firstName,
-      middleName,
-      lastName,
-      dateOfBirth,
-      status,
-      addresses,
-      customFields,
-    } = req.body as z.infer<typeof Patient>;
+    const { firstName, middleName, lastName, dateOfBirth, status, addresses } =
+      req.body as z.infer<typeof Patient>;
+
+    let { customFields } = req.body as z.infer<typeof Patient>;
+
+    let usersCustomFields = await prisma.customField.findMany({
+      where: {
+        userId,
+      },
+    });
+
+    customFields = customFields ?? [];
+
+    for (const field of customFields ?? []) {
+      if (!usersCustomFields.find((f) => f.id === field.id)) {
+        res.status(400).send('Invalid custom field');
+        return;
+      } else {
+        usersCustomFields = usersCustomFields.filter((f) => f.id !== field.id);
+      }
+    }
+
+    for (const field of usersCustomFields) {
+      customFields?.push({
+        id: field.id,
+        value: field.defaultValue ?? '',
+      });
+    }
 
     const { id } = await prisma.patient.create({
       data: {

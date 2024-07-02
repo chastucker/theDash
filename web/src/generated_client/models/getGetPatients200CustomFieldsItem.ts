@@ -7,6 +7,8 @@
  */
 
 export type GetGetPatients200CustomFieldsItem = {
+  /** @nullable */
+  defaultValue: string | null;
   id: string;
   name: string;
   type: string;

@@ -25,6 +25,7 @@ const getPatientsResponse = z.object({
         z.object({
           id: z.string(),
           value: z.string().nullable(),
+          customFieldId: z.string(),
         }),
       ),
     }),
@@ -34,6 +35,7 @@ const getPatientsResponse = z.object({
       id: z.string(),
       name: z.string(),
       type: z.string(),
+      defaultValue: z.string().nullable(),
     }),
   ),
 });
@@ -69,6 +71,7 @@ export const getPatients: Route = {
           select: {
             id: true,
             value: true,
+            customFieldId: true,
           },
         },
       },
@@ -82,12 +85,9 @@ export const getPatients: Route = {
         id: true,
         name: true,
         type: true,
+        defaultValue: true,
       },
     });
-
-    console.log('customFields', customFields);
-    console.log('patients', patients);
-    console.log('patients', patients[0].patientCustomFields);
 
     return { patients, customFields };
   },
