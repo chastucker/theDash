@@ -1,14 +1,13 @@
 "use client";
-import React, { useState } from "react";
+import React from "react";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "components/ui/dialog";
-import { AddEditPatientForm } from "components/forms/AddEditPatientForm";
+import { AddEditPatientForm } from "components/forms/addEditPatient";
 import {
   GetGetPatients200CustomFieldsItem,
   GetGetPatients200PatientsItem,

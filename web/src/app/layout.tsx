@@ -1,11 +1,8 @@
-import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import Providers from "./providers";
+import Providers from "./Providers";
 import "../utils/axiosInstance";
-import axios from "axios";
-import { cookies } from "next/headers";
-import { Header } from "components/Header";
+import { Toaster } from "components/ui/toaster";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -32,6 +29,7 @@ export default function RootLayout({
             {children}
           </div>
         </Providers>
+        <Toaster />
       </body>
     </html>
   );

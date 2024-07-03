@@ -13,26 +13,15 @@ import { GetGetPatients200CustomFieldsItem } from "generated_client";
 
 export default function AddEditCustomField({
   customFields,
+  open,
+  closeModal,
 }: {
   customFields: GetGetPatients200CustomFieldsItem[];
+  open: boolean;
+  closeModal: () => void;
 }) {
-  const [open, setOpen] = useState(false);
-
-  const closeModal = () => {
-    setOpen(false);
-  };
-
-  const openModal = () => {
-    setOpen(true);
-  };
-
   return (
     <Dialog open={open}>
-      <DialogTrigger onClick={openModal}>
-        <div className="border p-2 m-2 bg-black text-white rounded-xl">
-          Modify Custom Fields
-        </div>
-      </DialogTrigger>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Modify Custom Field</DialogTitle>

@@ -1,0 +1,1 @@
+export { AddEditPatientForm } from "./AddEditPatientForm";

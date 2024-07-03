@@ -28,6 +28,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "components/ui/select";
+import { useToast } from "components/ui/use-toast";
 
 const formSchema = z.object({
   id: z.string(),
@@ -48,48 +49,79 @@ export function AddEditCustomFieldForm({
   const addCustomField = usePostCustomField();
   const editCustomField = usePutCustomField();
   const deleteCustomField = usePostCustomFieldDelete();
+  const { toast } = useToast();
 
   const deleteCustomFieldById = async (id: string) => {
-    await deleteCustomField.mutateAsync({
-      data: {
-        id,
-      },
-    });
-    await queryClient.invalidateQueries({
-      queryKey: getGetGetPatientsQueryKey(),
-    });
-    closeModal();
+    try {
+      await deleteCustomField.mutateAsync({
+        data: {
+          id,
+        },
+      });
+      closeModal();
+      await queryClient.invalidateQueries({
+        queryKey: getGetGetPatientsQueryKey(),
+      });
+      toast({
+        title: "Custom Field Deleted Successfully",
+      });
+    } catch {
+      toast({
+        title: "Error Deleting Custom Field",
+        variant: "destructive",
+      });
+    }
   };
 
   const queryClient = useQueryClient();
   const onEditSubmit = async (data: z.infer<typeof formSchema>) => {
-    await editCustomField.mutateAsync({
-      data: {
-        ...data,
-        id: data.id,
-        defaultValue:
-          data.defaultValue.trim() === "" ? undefined : data.defaultValue,
-      },
-    });
-    await queryClient.invalidateQueries({
-      queryKey: getGetGetPatientsQueryKey(),
-    });
-    closeModal();
+    try {
+      await editCustomField.mutateAsync({
+        data: {
+          ...data,
+          id: data.id,
+          defaultValue:
+            data.defaultValue.trim() === "" ? undefined : data.defaultValue,
+        },
+      });
+      closeModal();
+      await queryClient.invalidateQueries({
+        queryKey: getGetGetPatientsQueryKey(),
+      });
+      toast({
+        title: "Custom Field Updated Successfully",
+      });
+    } catch {
+      toast({
+        title: "Error Updating Custom Field",
+        variant: "destructive",
+      });
+    }
   };
 
   const onAddSubmit = async (data: z.infer<typeof formSchema>) => {
-    await addCustomField.mutateAsync({
-      data: {
-        ...data,
-        defaultValue:
-          data.defaultValue.trim() === "" ? null : data.defaultValue,
-      },
-    });
+    try {
+      await addCustomField.mutateAsync({
+        data: {
+          ...data,
+          defaultValue:
+            data.defaultValue.trim() === "" ? null : data.defaultValue,
+        },
+      });
 
-    await queryClient.invalidateQueries({
-      queryKey: getGetGetPatientsQueryKey(),
-    });
-    closeModal();
+      closeModal();
+      await queryClient.invalidateQueries({
+        queryKey: getGetGetPatientsQueryKey(),
+      });
+      toast({
+        title: "Custom Field Added Successfully",
+      });
+    } catch {
+      toast({
+        title: "Error Adding Custom Field",
+        variant: "destructive",
+      });
+    }
   };
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -128,6 +160,11 @@ export function AddEditCustomFieldForm({
     }
   };
   const id = form.watch("id");
+
+  const isPending =
+    addCustomField.isPending ||
+    editCustomField.isPending ||
+    deleteCustomField.isPending;
 
   return (
     <FormProvider {...form}>
@@ -241,8 +278,9 @@ export function AddEditCustomFieldForm({
               : form.handleSubmit(onEditSubmit)
           }
           type="submit"
+          disabled={isPending}
         >
-          Submit
+          {true ? "Submitting" : "Submit"}
         </Button>
         <Button className="mt-4" onClick={closeModal} type="button">
           Close

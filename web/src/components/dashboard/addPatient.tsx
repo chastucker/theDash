@@ -1,38 +1,26 @@
 "use client";
-import React, { useState } from "react";
+import React from "react";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "components/ui/dialog";
-import { AddEditPatientForm } from "components/forms/AddEditPatientForm";
+import { AddEditPatientForm } from "components/forms/addEditPatient";
 import { GetGetPatients200CustomFieldsItem } from "generated_client";
 
 export default function AddPatient({
   customFields,
+  open,
+  closeModal,
 }: {
   customFields: GetGetPatients200CustomFieldsItem[];
+  open: boolean;
+  closeModal: () => void;
 }) {
-  const [open, setOpen] = useState(false);
-
-  const closeModal = () => {
-    setOpen(false);
-  };
-
-  const openModal = () => {
-    setOpen(true);
-  };
-
   return (
     <Dialog open={open}>
-      <DialogTrigger onClick={openModal}>
-        <div className="border p-2 m-2 bg-black text-white rounded-xl">
-          Add Patient
-        </div>
-      </DialogTrigger>
       <DialogContent className="overflow-scroll max-h-[50%]">
         <DialogHeader>
           <DialogTitle>Add Patient</DialogTitle>

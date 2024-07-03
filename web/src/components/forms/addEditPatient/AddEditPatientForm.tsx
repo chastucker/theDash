@@ -1,12 +1,7 @@
 "use client";
 
 import React from "react";
-import {
-  ControllerRenderProps,
-  FormProvider,
-  useFieldArray,
-  useForm,
-} from "react-hook-form";
+import { FormProvider, useFieldArray, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import {
@@ -22,7 +17,6 @@ import {
   getGetGetPatientsQueryKey,
   GetGetPatients200CustomFieldsItem,
   GetGetPatients200PatientsItem,
-  useGetGetPatients,
   usePostAddPatient,
   usePutUpdatePatient,
 } from "generated_client";
@@ -36,30 +30,10 @@ import {
 } from "components/ui/select";
 
 import { Datepicker } from "flowbite-react";
-
-const STATUS_OPTIONS = ["Active", "Churned", "Inquiry", "Onboarding"];
-const formSchema = z.object({
-  firstName: z.string().min(1, "First Name is required"),
-  middleName: z.string(),
-  lastName: z.string().min(1, "Last Name is required"),
-  dateOfBirth: z.date({ message: "Date of birth is required" }),
-  status: z.string().min(1, "Status is required"),
-  addresses: z.array(
-    z.object({
-      street: z.string().min(1, "Street is required"),
-      city: z.string().min(1, "City is required"),
-      state: z.string().min(1, "State is required"),
-      zip: z.string().min(1, "Zip Code is required"),
-    })
-  ),
-  customFields: z.array(
-    z.object({
-      customFieldId: z.string(),
-      customFieldName: z.string(),
-      value: z.string(),
-    })
-  ),
-});
+import { formSchema, STATUS_OPTIONS } from "./constants";
+import { AddEditPatientCustomInput } from "./AddEditPatientCustomInput";
+import { getDefaultValues } from "./getDefaultValues";
+import { useToast } from "components/ui/use-toast";
 
 export function AddEditPatientForm({
   closeModal,
@@ -74,6 +48,7 @@ export function AddEditPatientForm({
   const addPatient = usePostAddPatient();
   const queryClient = useQueryClient();
   const defaultValues = getDefaultValues(patient, customFields);
+  const { toast } = useToast();
 
   const onEditSubmit = async (data: z.infer<typeof formSchema>) => {
     if (patient === undefined) {
@@ -90,20 +65,29 @@ export function AddEditPatientForm({
     const addresses = data.addresses.filter(
       (address) => address.city.trim() !== ""
     );
-
-    await editPatient.mutateAsync({
-      data: {
-        id: patient.id,
-        ...data,
-        addresses,
-        dateOfBirth: data.dateOfBirth.toISOString(),
-        customFields: dataCustomFields,
-      },
-    });
-    await queryClient.invalidateQueries({
-      queryKey: getGetGetPatientsQueryKey(),
-    });
-    closeModal();
+    try {
+      await editPatient.mutateAsync({
+        data: {
+          id: patient.id,
+          ...data,
+          addresses,
+          dateOfBirth: data.dateOfBirth.toISOString(),
+          customFields: dataCustomFields,
+        },
+      });
+      closeModal();
+      await queryClient.invalidateQueries({
+        queryKey: getGetGetPatientsQueryKey(),
+      });
+      toast({
+        title: "Patient Updated Successfully",
+      });
+    } catch {
+      toast({
+        title: "Error Updating Patient",
+        variant: "destructive",
+      });
+    }
   };
 
   const onAddSubmit = async (data: z.infer<typeof formSchema>) => {
@@ -117,19 +101,28 @@ export function AddEditPatientForm({
     const addresses = data.addresses.filter(
       (address) => address.city.trim() !== ""
     );
-
-    await addPatient.mutateAsync({
-      data: {
-        ...data,
-        addresses,
-        dateOfBirth: data.dateOfBirth.toISOString(),
-        customFields: dataCustomFields,
-      },
-    });
-    await queryClient.invalidateQueries({
-      queryKey: getGetGetPatientsQueryKey(),
-    });
-    closeModal();
+    try {
+      await addPatient.mutateAsync({
+        data: {
+          ...data,
+          addresses,
+          dateOfBirth: data.dateOfBirth.toISOString(),
+          customFields: dataCustomFields,
+        },
+      });
+      closeModal();
+      await queryClient.invalidateQueries({
+        queryKey: getGetGetPatientsQueryKey(),
+      });
+      toast({
+        title: "Patient Added Successfully",
+      });
+    } catch {
+      toast({
+        title: "Error Adding Patient",
+        variant: "destructive",
+      });
+    }
   };
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -141,6 +134,8 @@ export function AddEditPatientForm({
     control: form.control,
     name: "addresses",
   });
+
+  const isPending = addPatient.isPending || editPatient.isPending;
 
   return (
     <FormProvider {...form}>
@@ -313,7 +308,7 @@ export function AddEditPatientForm({
             control={form.control}
             name={`customFields.${index}.value`}
             render={({ field }) => (
-              <CustomInput
+              <AddEditPatientCustomInput
                 name={customField.name}
                 field={field}
                 type={customField.type}
@@ -331,157 +326,14 @@ export function AddEditPatientForm({
               : form.handleSubmit(onAddSubmit)
           }
           type="submit"
+          disabled={isPending}
         >
-          Submit
+          {isPending ? "Submitting" : "Submit"}
         </Button>
         <Button className="mt-4" onClick={closeModal} type="button">
           Close
         </Button>
       </div>
     </FormProvider>
-  );
-}
-
-function getDefaultValues(
-  patient: GetGetPatients200PatientsItem | undefined,
-  customFields: GetGetPatients200CustomFieldsItem[]
-) {
-  const defaultValues: z.infer<typeof formSchema> = {
-    firstName: patient?.firstName ?? "",
-    middleName: patient?.middleName ?? "",
-    lastName: patient?.lastName ?? "",
-    dateOfBirth: patient?.dateOfBirth
-      ? new Date(patient.dateOfBirth)
-      : new Date(),
-    status: patient?.status ?? "",
-    addresses: patient?.addresses ?? [
-      {
-        street: "",
-        city: "",
-        state: "",
-        zip: "",
-      },
-    ],
-    customFields: [],
-  };
-
-  if (!patient) {
-    for (const field of customFields) {
-      if (field.type === "date") {
-        const date =
-          field.defaultValue &&
-          new Date(field.defaultValue) instanceof Date &&
-          !isNaN(new Date(field.defaultValue).getTime())
-            ? new Date(field.defaultValue)
-            : new Date();
-
-        defaultValues.customFields.push({
-          customFieldId: field.id,
-          customFieldName: field.name,
-          value: date.toISOString(),
-        });
-        continue;
-      }
-
-      defaultValues.customFields.push({
-        customFieldId: field.id,
-        customFieldName: field.name,
-        value: field.defaultValue ?? "",
-      });
-    }
-  } else {
-    patient.patientCustomFields.forEach((field) => {
-      const customField = customFields.find(
-        (cf) => cf.id === field.customFieldId
-      );
-
-      if (customField && customField.type === "date") {
-        const date =
-          field.value &&
-          new Date(field.value) instanceof Date &&
-          !isNaN(new Date(field.value).getTime())
-            ? new Date(field.value)
-            : new Date();
-
-        defaultValues.customFields.push({
-          customFieldId: customField.id,
-          customFieldName: customField.name,
-          value: date.toString(),
-        });
-      } else {
-        if (customField) {
-          defaultValues.customFields.push({
-            customFieldId: customField.id,
-            customFieldName: customField.name,
-            value: field.value ?? "",
-          });
-        }
-      }
-    });
-  }
-
-  return defaultValues;
-}
-
-function CustomInput({
-  field,
-  type,
-  name,
-}: {
-  field: ControllerRenderProps<
-    z.infer<typeof formSchema>,
-    `customFields.${number}.value`
-  >;
-  type: string;
-  name: string;
-}) {
-  if (type === "date") {
-    const onChange = (date: Date) => {
-      field.onChange(date.toString());
-    };
-
-    return (
-      <FormItem className="flex flex-col">
-        <FormLabel>{name}</FormLabel>
-        <Datepicker
-          value={new Date(field.value).toLocaleDateString()}
-          onSelectedDateChanged={onChange}
-        />
-        <FormMessage />
-      </FormItem>
-    );
-  }
-
-  if (type === "boolean") {
-    return (
-      <FormItem>
-        <FormLabel>{name}</FormLabel>
-        <Select onValueChange={field.onChange} defaultValue={field.value}>
-          <FormControl>
-            <SelectTrigger>
-              <SelectValue placeholder="Select the type" />
-            </SelectTrigger>
-          </FormControl>
-          <SelectContent>
-            {["true", "false"].map((type) => (
-              <SelectItem key={type} value={type}>
-                {type}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-        <FormMessage />
-      </FormItem>
-    );
-  }
-
-  return (
-    <FormItem>
-      <FormLabel>{name}</FormLabel>
-      <FormControl>
-        <Input {...field} />
-      </FormControl>
-      <FormMessage />
-    </FormItem>
   );
 }

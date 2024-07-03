@@ -15,10 +15,12 @@ export function Header() {
   };
 
   return (
-    <div className="flex justify-between">
-      <div>The Dash</div>
+    <div className="flex justify-between items-center border-b-2  pb-4">
       <div>
-        <Button onClick={logout}>logout</Button>
+        <h1 className="text-xl rounded-2xl">Dashboard</h1>
+      </div>
+      <div>
+        <Button onClick={logout}>Logout</Button>
       </div>
     </div>
   );
