@@ -24,7 +24,7 @@ export function getColumns({
   editPatientHandler: (patient: GetGetPatients200PatientsItem) => void;
 }): ColumnDef<GetGetPatients200PatientsItem>[] {
   const customFieldsForTable: ColumnDef<GetGetPatients200PatientsItem>[] =
-    customFields?.map((field, index) => {
+    customFields?.map((field) => {
       if (field.type === "date") {
         return {
           accessorKey: field.name,
@@ -99,6 +99,26 @@ export function getColumns({
       accessorKey: "status",
       header: "Status",
       size: 100,
+    },
+    {
+      accessorKey: "addresses",
+      header: "Addresses",
+      cell: ({ row }) => {
+        const addresses = row.original?.addresses;
+        return (
+          addresses?.map((address) => {
+            return (
+              <>
+                <p key={address.id}>
+                  {address.street} <br /> {address.city}, {address.state},{" "}
+                  {address.zip}
+                </p>
+                <br />
+              </>
+            );
+          }) ?? ""
+        );
+      },
     },
     {
       accessorKey: "dateOfBirth",
