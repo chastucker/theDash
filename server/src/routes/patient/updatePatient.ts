@@ -79,7 +79,7 @@ export const updatePatient: Route = {
         });
       }
 
-      if (customFields) {
+      if (customFields && customFields.length > 0) {
         await prismaTransaction.patientCustomField.deleteMany({
           where: {
             patientId: id,

@@ -30,10 +30,14 @@ export function getColumns({
           accessorKey: field.name,
           header: field.name,
           cell: ({ row }) => {
-            if (row.original?.patientCustomFields[index]?.value) {
-              return new Date(
-                row.original.patientCustomFields[index].value
-              ).toLocaleDateString();
+            const val = row.original?.patientCustomFields.find((t) => {
+              if (t.customFieldId === field.id) {
+                return t;
+              }
+            });
+
+            if (val && val?.value) {
+              return new Date(val.value).toLocaleDateString();
             }
             return "";
           },
@@ -43,12 +47,16 @@ export function getColumns({
           accessorKey: field.name,
           header: field.name,
           cell: ({ row }) => {
-            if (row.original?.patientCustomFields[index]?.value) {
-              return row.original.patientCustomFields[index].value
-                ? "true"
-                : "false";
+            const val = row.original?.patientCustomFields.find((t) => {
+              if (t.customFieldId === field.id) {
+                return t;
+              }
+            });
+
+            if (val && val.value) {
+              return val.value;
             }
-            return "";
+            return "false";
           },
         };
       } else {
@@ -56,7 +64,16 @@ export function getColumns({
           accessorKey: field.name,
           header: field.name,
           cell: ({ row }) => {
-            return row.original?.patientCustomFields[index]?.value ?? "";
+            const val = row.original?.patientCustomFields.find((t) => {
+              if (t.customFieldId === field.id) {
+                return t;
+              }
+            });
+
+            if (val && val.value) {
+              return val.value;
+            }
+            return "";
           },
         };
       }

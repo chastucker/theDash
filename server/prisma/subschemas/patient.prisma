@@ -49,8 +49,9 @@ model PatientCustomField {
     patientId     String
     customFieldId String
 
-    patient     Patient     @relation(fields: [patientId], references: [id], onDelete: Cascade)
-    customField CustomField @relation(fields: [customFieldId], references: [id], onDelete: Cascade)
+    patient     Patient     @relation(fields: [patientId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+    customField CustomField @relation(fields: [customFieldId], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
+    @@unique([patientId, customFieldId])
     @@map("patient_custom_fields")
 }

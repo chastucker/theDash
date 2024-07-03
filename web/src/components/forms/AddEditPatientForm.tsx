@@ -83,7 +83,7 @@ export function AddEditPatientForm({
       return;
     }
 
-    const customFields = data.customFields.map((field) => {
+    const dataCustomFields = data.customFields.map((field) => {
       return {
         id: field.customFieldId,
         value: field.value,
@@ -95,7 +95,7 @@ export function AddEditPatientForm({
         id: patient.id,
         ...data,
         dateOfBirth: data.dateOfBirth.toISOString(),
-        customFields,
+        customFields: dataCustomFields,
       },
     });
     await queryClient.invalidateQueries({
@@ -105,7 +105,7 @@ export function AddEditPatientForm({
   };
 
   const onAddSubmit = async (data: z.infer<typeof formSchema>) => {
-    const customFields = data.customFields.map((field) => {
+    const dataCustomFields = data.customFields.map((field) => {
       return {
         id: field.customFieldId,
         value: field.value,
@@ -116,7 +116,7 @@ export function AddEditPatientForm({
       data: {
         ...data,
         dateOfBirth: data.dateOfBirth.toISOString(),
-        customFields,
+        customFields: dataCustomFields,
       },
     });
     await queryClient.invalidateQueries({
@@ -300,7 +300,7 @@ export function AddEditPatientForm({
         >
           Add addresses
         </Button>
-        {customFields.map((customField, index) => (
+        {customFields.sort().map((customField, index) => (
           <FormField
             key={customField.id}
             control={form.control}
@@ -343,7 +343,9 @@ function getDefaultValues(
     firstName: patient?.firstName ?? "",
     middleName: patient?.middleName ?? "",
     lastName: patient?.lastName ?? "",
-    dateOfBirth: new Date(patient?.dateOfBirth ?? ""),
+    dateOfBirth: patient?.dateOfBirth
+      ? new Date(patient.dateOfBirth)
+      : new Date(),
     status: patient?.status ?? "",
     addresses: patient?.addresses ?? [
       {
@@ -369,12 +371,28 @@ function getDefaultValues(
       const customField = customFields.find(
         (cf) => cf.id === field.customFieldId
       );
-      if (customField) {
+
+      if (customField && customField.type === "date") {
+        const date =
+          field.value &&
+          new Date(field.value) instanceof Date &&
+          !isNaN(new Date(field.value).getTime())
+            ? new Date(field.value)
+            : new Date();
+
         defaultValues.customFields.push({
           customFieldId: customField.id,
           customFieldName: customField.name,
-          value: field.value ?? "",
+          value: date.toString(),
         });
+      } else {
+        if (customField) {
+          defaultValues.customFields.push({
+            customFieldId: customField.id,
+            customFieldName: customField.name,
+            value: field.value ?? "",
+          });
+        }
       }
     });
   }
@@ -398,6 +416,7 @@ function CustomInput({
     const onChange = (date: Date) => {
       field.onChange(date.toString());
     };
+
     return (
       <FormItem className="flex flex-col">
         <FormLabel>{name}</FormLabel>

@@ -13,7 +13,7 @@ import {
 } from "generated_client";
 import React, { useState } from "react";
 import AddPatient from "./addPatient";
-import AddCustomField from "./addCustomField";
+import AddEditCustomField from "./AddEditCustomField";
 import { useQueryClient } from "@tanstack/react-query";
 import EditPatient from "./editPatient";
 
@@ -66,7 +66,7 @@ export function Dashboard() {
         </div>
         <div>
           <AddPatient customFields={data?.customFields ?? []} />
-          <AddCustomField />
+          <AddEditCustomField customFields={data?.customFields ?? []} />
         </div>
       </div>
       <div className="w-full">

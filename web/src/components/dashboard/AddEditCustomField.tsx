@@ -8,9 +8,14 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "components/ui/dialog";
-import { AddCustomFieldForm } from "components/forms/addCustomFieldForm";
+import { AddEditCustomFieldForm } from "components/forms/AddEditCustomFieldForm";
+import { GetGetPatients200CustomFieldsItem } from "generated_client";
 
-export default function AddCustomField() {
+export default function AddEditCustomField({
+  customFields,
+}: {
+  customFields: GetGetPatients200CustomFieldsItem[];
+}) {
   const [open, setOpen] = useState(false);
 
   const closeModal = () => {
@@ -25,15 +30,18 @@ export default function AddCustomField() {
     <Dialog open={open}>
       <DialogTrigger onClick={openModal}>
         <div className="border p-2 m-2 bg-black text-white rounded-xl">
-          Add Custom Field
+          Modify Custom Fields
         </div>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Add Custom Field</DialogTitle>
-          <DialogDescription>Add a custom field</DialogDescription>
+          <DialogTitle>Modify Custom Field</DialogTitle>
+          <DialogDescription>Add or Edit a custom field</DialogDescription>
         </DialogHeader>
-        <AddCustomFieldForm closeModal={closeModal} />
+        <AddEditCustomFieldForm
+          customFields={customFields ?? []}
+          closeModal={closeModal}
+        />
       </DialogContent>
     </Dialog>
   );

@@ -73,6 +73,11 @@ export const getPatients: Route = {
             value: true,
             customFieldId: true,
           },
+          orderBy: {
+            customField: {
+              name: 'asc',
+            },
+          },
         },
       },
     });
@@ -86,6 +91,9 @@ export const getPatients: Route = {
         name: true,
         type: true,
         defaultValue: true,
+      },
+      orderBy: {
+        name: 'asc',
       },
     });
 

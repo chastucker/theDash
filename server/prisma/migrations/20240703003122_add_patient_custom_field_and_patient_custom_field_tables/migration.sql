@@ -44,11 +44,14 @@ CREATE TABLE "patient_custom_fields" (
     CONSTRAINT "patient_custom_fields_pkey" PRIMARY KEY ("id")
 );
 
+-- CreateIndex
+CREATE UNIQUE INDEX "patient_custom_fields_patientId_customFieldId_key" ON "patient_custom_fields"("patientId", "customFieldId");
+
 -- AddForeignKey
 ALTER TABLE "address" ADD CONSTRAINT "address_patientId_fkey" FOREIGN KEY ("patientId") REFERENCES "patient"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "patient_custom_fields" ADD CONSTRAINT "patient_custom_fields_patientId_fkey" FOREIGN KEY ("patientId") REFERENCES "patient"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "patient_custom_fields" ADD CONSTRAINT "patient_custom_fields_patientId_fkey" FOREIGN KEY ("patientId") REFERENCES "patient"("id") ON DELETE CASCADE ON UPDATE NO ACTION;
 
 -- AddForeignKey
-ALTER TABLE "patient_custom_fields" ADD CONSTRAINT "patient_custom_fields_customFieldId_fkey" FOREIGN KEY ("customFieldId") REFERENCES "custom_fields"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "patient_custom_fields" ADD CONSTRAINT "patient_custom_fields_customFieldId_fkey" FOREIGN KEY ("customFieldId") REFERENCES "custom_fields"("id") ON DELETE CASCADE ON UPDATE NO ACTION;

@@ -10,7 +10,7 @@ export const removeCustomField: Route = {
   schema: {
     description: 'Delete a custom field',
     tags: ['custom-field'],
-    params: IdSchema,
+    body: IdSchema,
     response: {
       200: z.void(),
       401: z.string(),

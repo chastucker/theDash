@@ -36,6 +36,7 @@ export * from "./postAddPatientBodyCustomFieldsItem";
 export * from "./postBody";
 export * from "./postCustomField200";
 export * from "./postCustomFieldBody";
+export * from "./postCustomFieldDeleteBody";
 export * from "./postRefresh200";
 export * from "./postRefresh400";
 export * from "./postRefreshBody";

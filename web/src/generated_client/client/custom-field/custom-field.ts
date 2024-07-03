@@ -15,6 +15,7 @@ import { useCallback } from "react";
 import type {
   PostCustomField200,
   PostCustomFieldBody,
+  PostCustomFieldDeleteBody,
   PutCustomField200,
   PutCustomFieldBody,
 } from "../../models";
@@ -177,12 +178,17 @@ export const usePutCustomField = <
 export const usePostCustomFieldDeleteHook = () => {
   const postCustomFieldDelete = useCustomInstance<unknown>();
 
-  return useCallback(() => {
-    return postCustomFieldDelete({
-      url: `http://localhost:4000/custom-field/delete`,
-      method: "POST",
-    });
-  }, [postCustomFieldDelete]);
+  return useCallback(
+    (postCustomFieldDeleteBody: PostCustomFieldDeleteBody) => {
+      return postCustomFieldDelete({
+        url: `http://localhost:4000/custom-field/delete`,
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        data: postCustomFieldDeleteBody,
+      });
+    },
+    [postCustomFieldDelete],
+  );
 };
 
 export const usePostCustomFieldDeleteMutationOptions = <
@@ -192,13 +198,13 @@ export const usePostCustomFieldDeleteMutationOptions = <
   mutation?: UseMutationOptions<
     Awaited<ReturnType<ReturnType<typeof usePostCustomFieldDeleteHook>>>,
     TError,
-    void,
+    { data: PostCustomFieldDeleteBody },
     TContext
   >;
 }): UseMutationOptions<
   Awaited<ReturnType<ReturnType<typeof usePostCustomFieldDeleteHook>>>,
   TError,
-  void,
+  { data: PostCustomFieldDeleteBody },
   TContext
 > => {
   const { mutation: mutationOptions } = options ?? {};
@@ -207,9 +213,11 @@ export const usePostCustomFieldDeleteMutationOptions = <
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<ReturnType<typeof usePostCustomFieldDeleteHook>>>,
-    void
-  > = () => {
-    return postCustomFieldDelete();
+    { data: PostCustomFieldDeleteBody }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return postCustomFieldDelete(data);
   };
 
   return { mutationFn, ...mutationOptions };
@@ -218,7 +226,7 @@ export const usePostCustomFieldDeleteMutationOptions = <
 export type PostCustomFieldDeleteMutationResult = NonNullable<
   Awaited<ReturnType<ReturnType<typeof usePostCustomFieldDeleteHook>>>
 >;
-
+export type PostCustomFieldDeleteMutationBody = PostCustomFieldDeleteBody;
 export type PostCustomFieldDeleteMutationError = string;
 
 export const usePostCustomFieldDelete = <
@@ -228,13 +236,13 @@ export const usePostCustomFieldDelete = <
   mutation?: UseMutationOptions<
     Awaited<ReturnType<ReturnType<typeof usePostCustomFieldDeleteHook>>>,
     TError,
-    void,
+    { data: PostCustomFieldDeleteBody },
     TContext
   >;
 }): UseMutationResult<
   Awaited<ReturnType<ReturnType<typeof usePostCustomFieldDeleteHook>>>,
   TError,
-  void,
+  { data: PostCustomFieldDeleteBody },
   TContext
 > => {
   const mutationOptions = usePostCustomFieldDeleteMutationOptions(options);
