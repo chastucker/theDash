@@ -1,6 +1,6 @@
 "use client";
 
-import { ColumnDef } from "@tanstack/react-table";
+import { Column, ColumnDef } from "@tanstack/react-table";
 import { Button } from "components/ui/button";
 import {
   DropdownMenu,
@@ -12,7 +12,7 @@ import {
   GetGetPatients200CustomFieldsItem,
   GetGetPatients200PatientsItem,
 } from "generated_client";
-import { MoreHorizontal } from "lucide-react";
+import { ArrowUpDown, MoreHorizontal } from "lucide-react";
 
 export function getColumns({
   customFields,
@@ -82,22 +82,22 @@ export function getColumns({
   return [
     {
       accessorKey: "firstName",
-      header: "First Name",
+      header: ({ column }) => <SortColumn column={column} name="First Name" />,
       size: 150,
     },
     {
       accessorKey: "middleName",
-      header: "Middle Name",
+      header: ({ column }) => <SortColumn column={column} name="Middle Name" />,
       size: 150,
     },
     {
       accessorKey: "lastName",
-      header: "Last Name",
+      header: ({ column }) => <SortColumn column={column} name="Last Name" />,
       size: 150,
     },
     {
       accessorKey: "status",
-      header: "Status",
+      header: ({ column }) => <SortColumn column={column} name="Status" />,
       size: 100,
     },
     {
@@ -122,7 +122,9 @@ export function getColumns({
     },
     {
       accessorKey: "dateOfBirth",
-      header: "Date of Birth",
+      header: ({ column }) => (
+        <SortColumn column={column} name="Date of Birth" />
+      ),
       cell: ({ row }) => {
         return new Date(row.getValue("dateOfBirth")).toLocaleDateString();
       },
@@ -158,4 +160,26 @@ export function getColumns({
       size: 100,
     },
   ];
+}
+
+function SortColumn({
+  column,
+  name,
+}: {
+  column: Column<GetGetPatients200PatientsItem, unknown>;
+  name: string;
+}) {
+  return (
+    <Button
+      variant="ghost"
+      onClick={() => {
+        console.log("clicked", name);
+        console.log(column.getIsSorted());
+        column.toggleSorting(column.getIsSorted() === "asc");
+      }}
+    >
+      {name}
+      <ArrowUpDown className="ml-2 h-4 w-4" />
+    </Button>
+  );
 }
