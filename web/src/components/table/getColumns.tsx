@@ -27,7 +27,7 @@ export function getColumns({
     customFields?.map((field) => {
       if (field.type === "date") {
         return {
-          id: field.name,
+          id: field.id,
           accessorKey: field.name,
           header: field.name,
           cell: ({ row }) => {
@@ -42,10 +42,25 @@ export function getColumns({
             }
             return "";
           },
+          filterFn: (rows, id, filterValue) => {
+            const vals = rows.original?.patientCustomFields.find(
+              (patientCustomField) => {
+                return patientCustomField.customFieldId === id;
+              }
+            );
+
+            return Boolean(
+              vals &&
+                vals.value &&
+                new Date(vals.value)
+                  .toLocaleDateString()
+                  .includes(filterValue.toLowerCase())
+            );
+          },
         };
       } else if (field.type === "boolean") {
         return {
-          id: field.name,
+          id: field.id,
           accessorKey: field.name,
           header: field.name,
           cell: ({ row }) => {
@@ -60,10 +75,23 @@ export function getColumns({
             }
             return "false";
           },
+          filterFn: (rows, id, filterValue) => {
+            const vals = rows.original?.patientCustomFields.find(
+              (patientCustomField) => {
+                return patientCustomField.customFieldId === id;
+              }
+            );
+
+            return Boolean(
+              vals &&
+                vals.value &&
+                vals.value.toLowerCase().includes(filterValue.toLowerCase())
+            );
+          },
         };
       } else {
         return {
-          id: field.name,
+          id: field.id,
           accessorKey: field.name,
           header: field.name,
           cell: ({ row }) => {
@@ -77,6 +105,19 @@ export function getColumns({
               return val.value;
             }
             return "";
+          },
+          filterFn: (rows, id, filterValue) => {
+            const vals = rows.original?.patientCustomFields.find(
+              (patientCustomField) => {
+                return patientCustomField.customFieldId === id;
+              }
+            );
+
+            return Boolean(
+              vals &&
+                vals.value &&
+                vals.value.toLowerCase().includes(filterValue.toLowerCase())
+            );
           },
         };
       }
@@ -102,6 +143,7 @@ export function getColumns({
       size: 150,
     },
     {
+      id: "status",
       accessorKey: "status",
       header: ({ column }) => <SortColumn column={column} name="Status" />,
       size: 100,
@@ -197,8 +239,6 @@ function SortColumn({
     <Button
       variant="ghost"
       onClick={() => {
-        console.log("clicked", name);
-        console.log(column.getIsSorted());
         column.toggleSorting(column.getIsSorted() === "asc");
       }}
     >
