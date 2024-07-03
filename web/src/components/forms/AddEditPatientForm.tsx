@@ -6,7 +6,6 @@ import {
   FormProvider,
   useFieldArray,
   useForm,
-  useFormContext,
 } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -40,21 +39,19 @@ import { Datepicker } from "flowbite-react";
 
 const STATUS_OPTIONS = ["Active", "Churned", "Inquiry", "Onboarding"];
 const formSchema = z.object({
-  firstName: z.string().min(2),
+  firstName: z.string().min(1, "First Name is required"),
   middleName: z.string(),
-  lastName: z.string().min(2),
-  dateOfBirth: z.date(),
-  status: z.string(),
-  addresses: z
-    .array(
-      z.object({
-        street: z.string(),
-        city: z.string(),
-        state: z.string(),
-        zip: z.string(),
-      })
-    )
-    .min(1),
+  lastName: z.string().min(1, "Last Name is required"),
+  dateOfBirth: z.date({ message: "Date of birth is required" }),
+  status: z.string().min(1, "Status is required"),
+  addresses: z.array(
+    z.object({
+      street: z.string().min(1, "Street is required"),
+      city: z.string().min(1, "City is required"),
+      state: z.string().min(1, "State is required"),
+      zip: z.string().min(1, "Zip Code is required"),
+    })
+  ),
   customFields: z.array(
     z.object({
       customFieldId: z.string(),
@@ -90,10 +87,15 @@ export function AddEditPatientForm({
       };
     });
 
+    const addresses = data.addresses.filter(
+      (address) => address.city.trim() !== ""
+    );
+
     await editPatient.mutateAsync({
       data: {
         id: patient.id,
         ...data,
+        addresses,
         dateOfBirth: data.dateOfBirth.toISOString(),
         customFields: dataCustomFields,
       },
@@ -112,9 +114,14 @@ export function AddEditPatientForm({
       };
     });
 
+    const addresses = data.addresses.filter(
+      (address) => address.city.trim() !== ""
+    );
+
     await addPatient.mutateAsync({
       data: {
         ...data,
+        addresses,
         dateOfBirth: data.dateOfBirth.toISOString(),
         customFields: dataCustomFields,
       },
@@ -360,6 +367,22 @@ function getDefaultValues(
 
   if (!patient) {
     for (const field of customFields) {
+      if (field.type === "date") {
+        const date =
+          field.defaultValue &&
+          new Date(field.defaultValue) instanceof Date &&
+          !isNaN(new Date(field.defaultValue).getTime())
+            ? new Date(field.defaultValue)
+            : new Date();
+
+        defaultValues.customFields.push({
+          customFieldId: field.id,
+          customFieldName: field.name,
+          value: date.toISOString(),
+        });
+        continue;
+      }
+
       defaultValues.customFields.push({
         customFieldId: field.id,
         customFieldName: field.name,

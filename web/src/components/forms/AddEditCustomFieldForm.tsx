@@ -31,8 +31,8 @@ import {
 
 const formSchema = z.object({
   id: z.string(),
-  name: z.string(),
-  type: z.string(),
+  name: z.string().min(1, "Name is required"),
+  type: z.string().min(1, "Type is required"),
   defaultValue: z.string(),
 });
 

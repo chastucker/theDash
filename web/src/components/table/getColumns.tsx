@@ -108,13 +108,13 @@ export function getColumns({
         return (
           addresses?.map((address) => {
             return (
-              <>
-                <p key={address.id}>
+              <div key={address.id}>
+                <p>
                   {address.street} <br /> {address.city}, {address.state},{" "}
                   {address.zip}
                 </p>
                 <br />
-              </>
+              </div>
             );
           }) ?? ""
         );
