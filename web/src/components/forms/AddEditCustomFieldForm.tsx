@@ -63,11 +63,11 @@ export function AddEditCustomFieldForm({
         queryKey: getGetGetPatientsQueryKey(),
       });
       toast({
-        title: "Custom Field Deleted Successfully",
+        title: "Column Deleted Successfully",
       });
     } catch {
       toast({
-        title: "Error Deleting Custom Field",
+        title: "Error Deleting Column",
         variant: "destructive",
       });
     }
@@ -89,11 +89,11 @@ export function AddEditCustomFieldForm({
         queryKey: getGetGetPatientsQueryKey(),
       });
       toast({
-        title: "Custom Field Updated Successfully",
+        title: "Column Updated Successfully",
       });
     } catch {
       toast({
-        title: "Error Updating Custom Field",
+        title: "Error Updating Column",
         variant: "destructive",
       });
     }
@@ -114,11 +114,11 @@ export function AddEditCustomFieldForm({
         queryKey: getGetGetPatientsQueryKey(),
       });
       toast({
-        title: "Custom Field Added Successfully",
+        title: "Column Added Successfully",
       });
     } catch {
       toast({
-        title: "Error Adding Custom Field",
+        title: "Error Adding Column",
         variant: "destructive",
       });
     }
@@ -175,7 +175,7 @@ export function AddEditCustomFieldForm({
           render={({ field }) => (
             <FormItem>
               <FormLabel>
-                Select existing custom field name or add a new one
+                Select existing column name or add a new one
               </FormLabel>
               <Select
                 onValueChange={(value) => {
@@ -186,7 +186,7 @@ export function AddEditCustomFieldForm({
               >
                 <FormControl>
                   <SelectTrigger>
-                    <SelectValue placeholder="Add or edit custom field" />
+                    <SelectValue placeholder="Add or edit a column" />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
@@ -267,7 +267,7 @@ export function AddEditCustomFieldForm({
             onClick={() => deleteCustomFieldById(id)}
             type="submit"
           >
-            delete
+            Delete
           </Button>
         )}
         <Button
@@ -280,7 +280,7 @@ export function AddEditCustomFieldForm({
           type="submit"
           disabled={isPending}
         >
-          {true ? "Submitting" : "Submit"}
+          {isPending ? "Submitting" : "Submit"}
         </Button>
         <Button className="mt-4" onClick={closeModal} type="button">
           Close

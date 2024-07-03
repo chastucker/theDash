@@ -22,10 +22,10 @@ export default function AddEditCustomField({
 }) {
   return (
     <Dialog open={open}>
-      <DialogContent>
+      <DialogContent closeModal={closeModal}>
         <DialogHeader>
-          <DialogTitle>Modify Custom Field</DialogTitle>
-          <DialogDescription>Add or Edit a custom field</DialogDescription>
+          <DialogTitle>Modify Column</DialogTitle>
+          <DialogDescription>Add or edit a column</DialogDescription>
         </DialogHeader>
         <AddEditCustomFieldForm
           customFields={customFields ?? []}

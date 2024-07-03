@@ -21,7 +21,10 @@ export default function AddPatient({
 }) {
   return (
     <Dialog open={open}>
-      <DialogContent className="overflow-scroll max-h-[50%]">
+      <DialogContent
+        closeModal={closeModal}
+        className="overflow-scroll max-h-[50%]"
+      >
         <DialogHeader>
           <DialogTitle>Add Patient</DialogTitle>
           <DialogDescription>Add a patient to the group</DialogDescription>

@@ -26,7 +26,10 @@ export default function EditPatient({
 }) {
   return (
     <Dialog open={open}>
-      <DialogContent className="overflow-scroll max-h-[50%]">
+      <DialogContent
+        closeModal={closeModal}
+        className="overflow-scroll max-h-[50%]"
+      >
         <DialogHeader>
           <DialogTitle>Edit Patient</DialogTitle>
           <DialogDescription>Edit a patient to the group</DialogDescription>
