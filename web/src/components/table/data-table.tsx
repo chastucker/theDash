@@ -7,10 +7,14 @@ import {
   SortingState,
   getCoreRowModel,
   useReactTable,
+  ColumnFiltersState,
+  getFilteredRowModel,
   getSortedRowModel,
   getPaginationRowModel,
+  Table as RTable,
 } from "@tanstack/react-table";
 import { Button } from "components/ui/button";
+import { Input } from "components/ui/input";
 
 import {
   Table,
@@ -52,15 +56,19 @@ export function DataTable<TData, TValue>({
   data,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     onSortingChange: setSorting,
+    onColumnFiltersChange: setColumnFilters,
     getSortedRowModel: getSortedRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
     state: {
       sorting,
+      columnFilters,
     },
   });
 
@@ -70,6 +78,39 @@ export function DataTable<TData, TValue>({
 
   return (
     <div className="rounded-md border overflow-y">
+      <div className="p-4">
+        <div className="flex flex-row items-center space-x-2 space-y-0 ">
+          <FilterInput<TData>
+            table={table}
+            columnId="firstName"
+            name="First Name"
+          />
+
+          <FilterInput<TData>
+            table={table}
+            columnId="middleName"
+            name="Middle Name"
+          />
+          <FilterInput<TData>
+            table={table}
+            columnId="lastName"
+            name="Last Name"
+          />
+          <FilterInput<TData> table={table} columnId="status" name="Status" />
+        </div>
+        <div className="flex flex-row items-center justify-center space-x-2 space-y-0 p-4">
+          <FilterInput<TData>
+            table={table}
+            columnId="dateOfBirth"
+            name="Date of Birth"
+          />
+          <FilterInput<TData>
+            table={table}
+            columnId="addresses"
+            name="Address"
+          />
+        </div>
+      </div>
       <div>
         <FormProvider {...form}>
           <Table>
@@ -153,5 +194,61 @@ export function DataTable<TData, TValue>({
         </Button>
       </div>
     </div>
+  );
+}
+
+function Filters<TData>({ table }: { table: RTable<TData> }) {
+  return (
+    <>
+      <div className="flex flex-row items-center space-x-2 space-y-0 ">
+        <FilterInput<TData>
+          table={table}
+          columnId="firstName"
+          name="First Name"
+        />
+
+        <FilterInput<TData>
+          table={table}
+          columnId="middleName"
+          name="Middle Name"
+        />
+        <FilterInput<TData>
+          table={table}
+          columnId="lastName"
+          name="Last Name"
+        />
+        <FilterInput<TData> table={table} columnId="status" name="Status" />
+      </div>
+      <div className="flex flex-row items-center justify-center space-x-2 space-y-0 p-4">
+        <FilterInput<TData>
+          table={table}
+          columnId="dateOfBirth"
+          name="Date of Birth"
+        />
+        <FilterInput<TData> table={table} columnId="addresses" name="Address" />
+      </div>
+    </>
+  );
+}
+
+function FilterInput<TData>({
+  table,
+  columnId,
+  name,
+}: {
+  table: RTable<TData>;
+  columnId: string;
+  name: string;
+}) {
+  return (
+    <Input
+      placeholder={`Filter by ${name}...`}
+      value={(table.getColumn(columnId)?.getFilterValue() as string) ?? ""}
+      onChange={(event) => {
+        console.log(event.target.value);
+        table.getColumn(columnId)?.setFilterValue(event.target.value);
+      }}
+      className="max-w-sm"
+    />
   );
 }

@@ -27,6 +27,7 @@ export function getColumns({
     customFields?.map((field) => {
       if (field.type === "date") {
         return {
+          id: field.name,
           accessorKey: field.name,
           header: field.name,
           cell: ({ row }) => {
@@ -44,6 +45,7 @@ export function getColumns({
         };
       } else if (field.type === "boolean") {
         return {
+          id: field.name,
           accessorKey: field.name,
           header: field.name,
           cell: ({ row }) => {
@@ -61,6 +63,7 @@ export function getColumns({
         };
       } else {
         return {
+          id: field.name,
           accessorKey: field.name,
           header: field.name,
           cell: ({ row }) => {
@@ -81,16 +84,19 @@ export function getColumns({
 
   return [
     {
+      id: "firstName",
       accessorKey: "firstName",
       header: ({ column }) => <SortColumn column={column} name="First Name" />,
       size: 150,
     },
     {
+      id: "middleName",
       accessorKey: "middleName",
       header: ({ column }) => <SortColumn column={column} name="Middle Name" />,
       size: 150,
     },
     {
+      id: "lastName",
       accessorKey: "lastName",
       header: ({ column }) => <SortColumn column={column} name="Last Name" />,
       size: 150,
@@ -101,6 +107,7 @@ export function getColumns({
       size: 100,
     },
     {
+      id: "addresses",
       accessorKey: "addresses",
       header: "Addresses",
       cell: ({ row }) => {
@@ -119,8 +126,25 @@ export function getColumns({
           }) ?? ""
         );
       },
+      filterFn: (rows, _, filterValue) => {
+        const addresses = rows.original?.addresses;
+
+        for (const address of rows.original?.addresses) {
+          if (
+            address.street.toLowerCase().includes(filterValue.toLowerCase()) ||
+            address.city.toLowerCase().includes(filterValue.toLowerCase()) ||
+            address.state.toLowerCase().includes(filterValue.toLowerCase()) ||
+            address.zip.toLowerCase().includes(filterValue.toLowerCase())
+          ) {
+            return true;
+          }
+        }
+
+        return false;
+      },
     },
     {
+      id: "dateOfBirth",
       accessorKey: "dateOfBirth",
       header: ({ column }) => (
         <SortColumn column={column} name="Date of Birth" />
