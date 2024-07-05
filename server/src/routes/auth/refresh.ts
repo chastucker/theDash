@@ -7,7 +7,7 @@ const body = z.object({
   refreshToken: z.string(),
 });
 
-export const refresh: Route<{ P: z.infer<typeof body> }> = {
+export const refresh: Route = {
   method: 'POST',
   url: '/refresh',
   schema: {

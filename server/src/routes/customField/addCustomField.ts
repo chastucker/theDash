@@ -14,7 +14,7 @@ export const addCustomField: Route = {
   method: 'POST',
   url: '/custom-field',
   schema: {
-    description: '',
+    description: 'Add a custom field for the user',
     tags: ['custom-field'],
     body: customFieldBody,
     response: {
@@ -59,6 +59,9 @@ export const addCustomField: Route = {
               customFieldId: customField.id,
               patientId: patient.id,
             },
+            patient: {
+              userId,
+            }
           },
           create: {
             customFieldId: customField.id,

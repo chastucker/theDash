@@ -24,8 +24,12 @@ export const getPatients: Route = {
     }
 
     const patients = await prisma.patient.findMany({
+      where: {
+        userId,
+      },
       select: {
         id: true,
+        userId: true,
         firstName: true,
         middleName: true,
         lastName: true,

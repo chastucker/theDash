@@ -263,7 +263,7 @@ export function AddEditCustomFieldForm({
         {id !== "new_value" && (
           <Button
             disabled={id === "new_value" || id === ""}
-            className="mt-4"
+            className="mt-4 bg-red-500 text-white hover:bg-red-600"
             onClick={() => deleteCustomFieldById(id)}
             type="submit"
           >
@@ -271,7 +271,7 @@ export function AddEditCustomFieldForm({
           </Button>
         )}
         <Button
-          className="mt-4"
+          className="mt-4 bg-green-500 text-white hover:bg-green-600"
           onClick={
             id === "new_value"
               ? form.handleSubmit(onAddSubmit)
@@ -282,7 +282,7 @@ export function AddEditCustomFieldForm({
         >
           {isPending ? "Submitting" : "Submit"}
         </Button>
-        <Button className="mt-4" onClick={closeModal} type="button">
+        <Button className="mt-4 bg-indigo-500 text-white hover:bg-indigo-600" onClick={closeModal} type="button">
           Close
         </Button>
       </div>

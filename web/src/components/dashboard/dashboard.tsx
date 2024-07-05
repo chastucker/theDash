@@ -133,14 +133,25 @@ export function Dashboard() {
         </div>
         <div className="space-x-2">
           <Button
+            className="bg-blue-500 text-white hover:bg-blue-600"
             onClick={() => {
               setShowFilters(!showFilters);
             }}
           >
             {showFilters ? "Hide Filters" : "Show Filters"}
           </Button>
-          <Button onClick={openAddEditPatientModal}>Add Patient</Button>
-          <Button onClick={openAddEditCustomFieldModal}>Modify Columns</Button>
+          <Button
+            className="bg-green-500 text-white hover:bg-green-600"
+            onClick={openAddEditPatientModal}
+          >
+            Add Patient
+          </Button>
+          <Button
+            className="bg-indigo-500 text-white hover:bg-indigo-600"
+            onClick={openAddEditCustomFieldModal}
+          >
+            Modify Columns
+          </Button>
         </div>
       </div>
       <div className="w-full">

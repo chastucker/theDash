@@ -22,8 +22,7 @@ export async function getServer() {
         cb(null, true);
         return;
       }
-      cb(null, true);
-      // cb(new Error('Not allowed'), false);
+      cb(new Error('Not allowed'), false);
     },
   });
 

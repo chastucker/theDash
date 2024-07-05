@@ -1,7 +1,7 @@
 "use client";
 
-import React from "react";
-import { FormProvider, useForm } from "react-hook-form";
+import React, { useState } from "react";
+import { FormProvider, set, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import {
@@ -31,6 +31,7 @@ export function Login({
   const router = useRouter();
   const signIn = usePostSignIn();
   const signUp = usePostSignUp();
+  const [isPendingForm, setIsPendingForm] = useState(false);
 
   const form = useForm<AuthForm>({
     resolver: zodResolver(authFormSchema),
@@ -41,6 +42,7 @@ export function Login({
   });
 
   const handleSignIn = async (authForm: AuthForm) => {
+    setIsPendingForm(true);
     const { refresh_token, access_token } = await signIn.mutateAsync({
       data: authForm,
     });
@@ -49,9 +51,11 @@ export function Login({
       setCookies(access_token, refresh_token);
       router.push("/");
     }
+    setIsPendingForm(false);
   };
 
   const handleSignUp = async (authForm: AuthForm) => {
+    setIsPendingForm(true);
     const { refresh_token, access_token } = await signUp.mutateAsync({
       data: authForm,
     });
@@ -60,6 +64,7 @@ export function Login({
       setCookies(access_token, refresh_token);
       router.push("/");
     }
+    setIsPendingForm(false);
   };
 
   return (
@@ -94,12 +99,20 @@ export function Login({
           />
           <div className="flex-row flex justify-between">
             <div>
-              <Button onClick={form.handleSubmit(handleSignIn)} type="button">
+              <Button
+                disabled={isPendingForm}
+                onClick={form.handleSubmit(handleSignIn)}
+                type="button"
+              >
                 Sign in
               </Button>
             </div>
             <div>
-              <Button onClick={form.handleSubmit(handleSignUp)} type="button">
+              <Button
+                disabled={isPendingForm}
+                onClick={form.handleSubmit(handleSignUp)}
+                type="button"
+              >
                 Sign up
               </Button>
             </div>

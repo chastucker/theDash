@@ -4,6 +4,13 @@ import orval from 'orval';
 
 const OPENAAPI_PATH = './openapi.temp.json';
 
+function getBaseurl() {
+  if (process.env.BASE_URL) {
+    return process.env.BASE_URL;
+  }
+  throw new Error('BASE_URL not defined');
+}
+
 export async function generateClient() {
   const server = await getServer();
   await server.ready();
@@ -17,7 +24,7 @@ export async function generateClient() {
   await orval({
     input: { target: OPENAAPI_PATH },
     output: {
-      baseUrl: 'http://localhost:4000',
+      baseUrl: getBaseurl(),
       client: 'react-query',
       workspace: '../web/src/generated_client/',
       schemas: './models',

@@ -198,11 +198,11 @@ export function AddEditPatientForm({
           name="status"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Type</FormLabel>
+              <FormLabel>Status</FormLabel>
               <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl>
                   <SelectTrigger>
-                    <SelectValue placeholder="Select the type" />
+                    <SelectValue placeholder="Select the Status" />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
@@ -218,7 +218,7 @@ export function AddEditPatientForm({
           )}
         />
 
-        <div className="py-4">
+        <div className="py-4 space-y-4">
           {addressesArray.fields.map((_, index) => (
             <div key={index} className="border p-3 rounded-xl">
               <div className="justify-center flex">
@@ -278,7 +278,7 @@ export function AddEditPatientForm({
               />
               <div className="flex justify-end">
                 <Button
-                  className="mt-4"
+                  className="mt-4 bg-red-500 text-white hover:bg-red-600"
                   onClick={() => addressesArray.remove(index)}
                   type="button"
                 >
@@ -289,7 +289,7 @@ export function AddEditPatientForm({
           ))}
         </div>
         <Button
-          className="mt-4"
+          className="mt-4 bg-blue-500 text-white hover:bg-blue-600"
           onClick={() =>
             addressesArray.append({
               street: "",
@@ -319,7 +319,7 @@ export function AddEditPatientForm({
       </form>
       <div className="flex flex-row justify-between">
         <Button
-          className="mt-4"
+          className="mt-4 bg-green-500 text-white hover:bg-green-600"
           onClick={
             patient
               ? form.handleSubmit(onEditSubmit)
@@ -330,7 +330,11 @@ export function AddEditPatientForm({
         >
           {isPending ? "Submitting" : "Submit"}
         </Button>
-        <Button className="mt-4" onClick={closeModal} type="button">
+        <Button
+          className="mt-4 bg-indigo-500 text-white hover:bg-indigo-600"
+          onClick={closeModal}
+          type="button"
+        >
           Close
         </Button>
       </div>

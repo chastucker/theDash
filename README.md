@@ -20,6 +20,9 @@ An application that stores users' patient data and displays it as a dashboard. U
       - SUPABASE_SERVICE_ROLE_SECRET - the supabase's service_role key found in `supabase.com/dashboard/project/{supabase_project_id}/settings/api`
       - DATABASE_URL - In the form of `postgres://postgres.{supabase_project_id}:{database_password}@{region_of_project}.pooler.supabase.com:6543/postgres?pgbouncer=true&connection_limit=1`
       - DIRECT_URL In the form of `postgres://postgres.{supabase_project_id}:{database_password}@{region_of_project}.pooler.supabase.com:5432/postgres`
+      - BASE_URL - the base url for the server
+   3. make a .env file in the web directory
+      1. Add a `NEXT_PUBLIC_SERVER_BASE_URL` with your base url to your server
 5. start the project
    - Open up a terminal and run `cd server; npm run generateclient; npx prisma migrate:dev; npm run dev`
    - In another terminal window open `cd web; npm run dev`
@@ -79,7 +82,8 @@ An application that stores users' patient data and displays it as a dashboard. U
 - [tanstack/react-table](https://tanstack.com/table) - Headless UI table library used to build tables and handle table state
 
 ## Future State
-
 - Sorting by custom fields
 - Add more custom field types (files)
 - Add avatars images
+- Compile time type checking on the routes 
+- Add accessability

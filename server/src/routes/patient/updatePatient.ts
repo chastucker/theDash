@@ -8,7 +8,7 @@ export const updatePatient: Route = {
   method: 'PUT',
   url: '/update-patient',
   schema: {
-    description: '',
+    description: 'Update a patient',
     tags: ['patient'],
     body: UpdatePatientBody,
     response: {
@@ -49,6 +49,9 @@ export const updatePatient: Route = {
         await prismaTransaction.address.deleteMany({
           where: {
             patientId: id,
+            patient: {
+              userId,
+            },
           },
         });
       }
@@ -57,6 +60,9 @@ export const updatePatient: Route = {
         await prismaTransaction.patientCustomField.deleteMany({
           where: {
             patientId: id,
+            patient: {
+              userId,
+            },
           },
         });
       }
@@ -64,6 +70,7 @@ export const updatePatient: Route = {
       const patient = await prismaTransaction.patient.update({
         where: {
           id,
+          userId,
         },
         data: {
           firstName,

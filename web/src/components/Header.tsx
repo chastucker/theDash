@@ -4,13 +4,16 @@ import React from "react";
 import { Button } from "./ui/button";
 import { deleteCookie } from "cookies-next";
 import { useRouter } from "next/navigation";
+import { useQueryClient } from "@tanstack/react-query";
 
 export function Header() {
   const router = useRouter();
+  const queryClient = useQueryClient();
 
   const logout = async () => {
     deleteCookie("accessToken");
     deleteCookie("refreshToken");
+    queryClient.removeQueries();
     router.push("/login");
   };
 
@@ -20,7 +23,7 @@ export function Header() {
         <h1 className="text-xl rounded-2xl">Dashboard</h1>
       </div>
       <div>
-        <Button onClick={logout}>Logout</Button>
+        <Button className="bg-red-500 text-white hover:bg-red-600" onClick={logout}>Logout</Button>
       </div>
     </div>
   );

@@ -4,6 +4,12 @@ import Axios, { AxiosRequestConfig } from "axios";
 
 export const AXIOS_INSTANCE = Axios.create({ baseURL: "" });
 
+const defaultUrl = process.env.VERCEL_URL
+  ? `https://${process.env.VERCEL_URL}`
+  : "http://localhost:3000";
+
+const serverUrl = process.env.NEXT_PUBLIC_SERVER_BASE_URL;
+
 export const useCustomInstance = <T>(): ((
   config: AxiosRequestConfig
 ) => Promise<T>) => {
@@ -38,13 +44,13 @@ AXIOS_INSTANCE.interceptors.response.use(
     if (error.response && error.response.status === 401) {
       const refreshToken = getCookie("refresh_token");
       if (!refreshToken) {
-        window.location.href = "http://localhost:3000/login";
+        window.location.href = `${defaultUrl}/login`;
         return;
       }
 
       try {
         const tokens = await axios.post(
-          "http://localhost:4000/refresh",
+          `${serverUrl}/refresh`,
           {
             refreshToken,
           },
@@ -65,7 +71,7 @@ AXIOS_INSTANCE.interceptors.response.use(
       } catch {
         deleteCookie("access_token");
         deleteCookie("refresh_token");
-        window.location.href = "http://localhost:3000/login";
+        window.location.href = `${defaultUrl}/login`;
         return;
       }
     }
