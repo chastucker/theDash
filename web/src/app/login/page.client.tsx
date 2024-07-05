@@ -40,7 +40,7 @@ export function Login({
     },
   });
 
-  const signMeIn = async (authForm: AuthForm) => {
+  const handleSignIn = async (authForm: AuthForm) => {
     const { refresh_token, access_token } = await signIn.mutateAsync({
       data: authForm,
     });
@@ -50,7 +50,8 @@ export function Login({
       router.push("/");
     }
   };
-  const signMeUp = async (authForm: AuthForm) => {
+
+  const handleSignUp = async (authForm: AuthForm) => {
     const { refresh_token, access_token } = await signUp.mutateAsync({
       data: authForm,
     });
@@ -93,12 +94,12 @@ export function Login({
           />
           <div className="flex-row flex justify-between">
             <div>
-              <Button onClick={form.handleSubmit(signMeIn)} type="button">
+              <Button onClick={form.handleSubmit(handleSignIn)} type="button">
                 Sign in
               </Button>
             </div>
             <div>
-              <Button onClick={form.handleSubmit(signMeUp)} type="button">
+              <Button onClick={form.handleSubmit(handleSignUp)} type="button">
                 Sign up
               </Button>
             </div>

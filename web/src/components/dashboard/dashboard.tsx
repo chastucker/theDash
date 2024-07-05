@@ -1,5 +1,6 @@
 "use client";
 
+import React, { useState } from "react";
 import { Header } from "components/Header";
 import { getColumns } from "components/table/getColumns";
 import { DataTable } from "components/table/DataTable";
@@ -11,13 +12,10 @@ import {
   useGetGetPatients,
   usePostRemovePatient,
 } from "generated_client";
-import React, { useState } from "react";
-import AddPatient from "./AddPatient";
-import AddEditCustomField from "./AddEditCustomField";
 import { useQueryClient } from "@tanstack/react-query";
-import EditPatient from "./EditPatient";
 import { useToast } from "components/ui/use-toast";
-import { title } from "process";
+import Modal from "components/ui/modal";
+import { AddEditCustomFieldForm, AddEditPatientForm } from "components/forms";
 
 export function Dashboard() {
   const { data, isFetching, refetch } = useGetGetPatients();
@@ -50,6 +48,10 @@ export function Dashboard() {
         variant: "destructive",
       });
     }
+  };
+
+  const refetchPatients = async () => {
+    await refetch();
   };
 
   const editPatientHandler = (patient: GetGetPatients200PatientsItem) => {
@@ -86,27 +88,47 @@ export function Dashboard() {
 
   return (
     <div className="w-[85%] space-y-4">
-      <AddPatient
-        open={isAddEditPatientModalOpen}
+      <Modal
+        title="Add Patient"
         closeModal={closeAddEditPatientModal}
-        customFields={data?.customFields ?? []}
-      />
-      <AddEditCustomField
+        open={isAddEditPatientModalOpen}
+        description="Add a patient to the group"
+      >
+        <AddEditPatientForm
+          customFields={data?.customFields ?? []}
+          closeModal={closeAddEditPatientModal}
+        />
+      </Modal>
+      <Modal
+        title="Modify Column"
+        description="Add or edit a column"
         open={isAddEditCustomFieldModalOpen}
         closeModal={closeAddEditCustomFieldModal}
-        customFields={data?.customFields ?? []}
-      />
+      >
+        <AddEditCustomFieldForm
+          customFields={data?.customFields ?? []}
+          closeModal={closeAddEditCustomFieldModal}
+        />
+      </Modal>
+      <Modal
+        open={isEditModalOpen}
+        closeModal={closeEditModal}
+        title="Edit Patient"
+        description="Edit a patient in the group"
+      >
+        <AddEditPatientForm
+          patient={patient}
+          customFields={data?.customFields ?? []}
+          closeModal={closeEditModal}
+        />
+      </Modal>
       <div>
         <Header />
       </div>
       <div className="flex-row flex justify-between items-center">
         <div>
-          <Button
-            onClick={async () => {
-              await refetch();
-            }}
-          >
-            {isFetching ? "Loading" : "Refresh"}
+          <Button onClick={refetchPatients}>
+            {isFetching ? "Loading..." : "Refresh"}
           </Button>
         </div>
         <div className="space-x-2">
@@ -115,7 +137,7 @@ export function Dashboard() {
               setShowFilters(!showFilters);
             }}
           >
-            {showFilters ? "Show Filters" : "Hide Filters"}
+            {showFilters ? "Hide Filters" : "Show Filters"}
           </Button>
           <Button onClick={openAddEditPatientModal}>Add Patient</Button>
           <Button onClick={openAddEditCustomFieldModal}>Modify Columns</Button>
@@ -126,12 +148,6 @@ export function Dashboard() {
           showFilters={showFilters}
           columns={columns}
           data={data?.patients ?? []}
-        />
-        <EditPatient
-          patient={patient}
-          open={isEditModalOpen}
-          closeModal={closeEditModal}
-          customFields={data?.customFields ?? []}
         />
       </div>
     </div>

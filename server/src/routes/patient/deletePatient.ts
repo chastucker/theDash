@@ -7,7 +7,7 @@ export const removePatient: Route = {
   method: 'POST',
   url: '/remove-patient',
   schema: {
-    description: '',
+    description: 'Remove patients from the current user.',
     tags: ['patient'],
     body: z.object({
       ids: z.array(z.string()),

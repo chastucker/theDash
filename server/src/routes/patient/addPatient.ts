@@ -1,19 +1,20 @@
 import { z } from 'zod';
 import { Route } from '../Route';
 import { prisma } from '../prisma';
-import { IdSchema, Patient } from './schemas';
+import { IdSchema, AddPatientBody } from './schemas';
 import { getUserId } from '../utils';
 
 export const addPatient: Route = {
   method: 'POST',
   url: '/add-patient',
   schema: {
-    description: 'Add a patient',
+    description: 'Add a patient for the current user',
     tags: ['patient'],
-    body: Patient,
+    body: AddPatientBody,
     response: {
       200: IdSchema,
       401: z.string(),
+      400: z.string(),
     },
   },
   handler: async (req, res) => {
@@ -25,9 +26,9 @@ export const addPatient: Route = {
     }
 
     const { firstName, middleName, lastName, dateOfBirth, status, addresses } =
-      req.body as z.infer<typeof Patient>;
+      req.body as z.infer<typeof AddPatientBody>;
 
-    let { customFields } = req.body as z.infer<typeof Patient>;
+    let { customFields } = req.body as z.infer<typeof AddPatientBody>;
 
     let usersCustomFields = await prisma.customField.findMany({
       where: {

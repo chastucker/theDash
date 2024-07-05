@@ -94,7 +94,7 @@ export function DataTable<TData, TValue>({
 
   return (
     <div className="rounded-md border overflow-y">
-      {!showFilters && (
+      {showFilters && (
         <div className="p-4">
           <Filters<TData, TValue>
             table={table}

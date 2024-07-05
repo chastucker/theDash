@@ -25,11 +25,15 @@ export function getColumns({
 }): ColumnDef<GetGetPatients200PatientsItem>[] {
   const customFieldsForTable: ColumnDef<GetGetPatients200PatientsItem>[] =
     customFields?.map((field) => {
+      const base = {
+        id: field.id,
+        accessorKey: field.name,
+        header: field.name,
+      };
+
       if (field.type === "date") {
         return {
-          id: field.id,
-          accessorKey: field.name,
-          header: field.name,
+          ...base,
           cell: ({ row }) => {
             const val = row.original?.patientCustomFields.find((t) => {
               if (t.customFieldId === field.id) {
@@ -60,9 +64,7 @@ export function getColumns({
         };
       } else if (field.type === "boolean") {
         return {
-          id: field.id,
-          accessorKey: field.name,
-          header: field.name,
+          ...base,
           cell: ({ row }) => {
             const val = row.original?.patientCustomFields.find((t) => {
               if (t.customFieldId === field.id) {
@@ -91,9 +93,7 @@ export function getColumns({
         };
       } else {
         return {
-          id: field.id,
-          accessorKey: field.name,
-          header: field.name,
+          ...base,
           cell: ({ row }) => {
             const val = row.original?.patientCustomFields.find((t) => {
               if (t.customFieldId === field.id) {

@@ -2,52 +2,17 @@ import { z } from 'zod';
 import { Route } from '../Route';
 import { prisma } from '../prisma';
 import { getUserId } from '../utils';
-
-const getPatientsResponse = z.object({
-  patients: z.array(
-    z.object({
-      id: z.string().uuid(),
-      firstName: z.string(),
-      middleName: z.optional(z.string()),
-      lastName: z.string(),
-      status: z.string(),
-      dateOfBirth: z.date(),
-      addresses: z.array(
-        z.object({
-          id: z.string().uuid(),
-          street: z.string(),
-          city: z.string(),
-          state: z.string(),
-          zip: z.string(),
-        }),
-      ),
-      patientCustomFields: z.array(
-        z.object({
-          id: z.string(),
-          value: z.string().nullable(),
-          customFieldId: z.string(),
-        }),
-      ),
-    }),
-  ),
-  customFields: z.array(
-    z.object({
-      id: z.string(),
-      name: z.string(),
-      type: z.string(),
-      defaultValue: z.string().nullable(),
-    }),
-  ),
-});
+import { PatientsResponse } from './schemas';
 
 export const getPatients: Route = {
   method: 'GET',
   url: '/get-patients',
   schema: {
-    description: '',
+    description: 'Gets all the patients for the current user.',
     tags: ['patient'],
     response: {
-      200: getPatientsResponse,
+      200: PatientsResponse,
+      401: z.string(),
     },
   },
   handler: async (req, res) => {

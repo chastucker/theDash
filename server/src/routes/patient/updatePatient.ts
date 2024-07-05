@@ -2,33 +2,7 @@ import { z } from 'zod';
 import { Route } from '../Route';
 import { prisma } from '../prisma';
 import { getUserId } from '../utils';
-
-const updatePatientBody = z
-  .object({
-    id: z.string(),
-    firstName: z.string(),
-    middleName: z.optional(z.string()),
-    lastName: z.string(),
-    dateOfBirth: z.coerce.date(),
-    status: z.string(),
-    addresses: z.array(
-      z.object({
-        street: z.string(),
-        city: z.string(),
-        state: z.string(),
-        zip: z.string(),
-      }),
-    ),
-    customFields: z
-      .array(
-        z.object({
-          id: z.string(),
-          value: z.string(),
-        }),
-      )
-      .optional(),
-  })
-  .partial();
+import { UpdatePatientBody } from './schemas';
 
 export const updatePatient: Route = {
   method: 'PUT',
@@ -36,7 +10,7 @@ export const updatePatient: Route = {
   schema: {
     description: '',
     tags: ['patient'],
-    body: updatePatientBody,
+    body: UpdatePatientBody,
     response: {
       200: z.object({
         id: z.string(),
@@ -60,7 +34,7 @@ export const updatePatient: Route = {
       status,
       addresses,
       customFields,
-    } = req.body as z.infer<typeof updatePatientBody>;
+    } = req.body as z.infer<typeof UpdatePatientBody>;
 
     if (!id) {
       res.code(400);

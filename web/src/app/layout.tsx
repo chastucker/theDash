@@ -23,9 +23,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${inter.className} mt-4 min-w-screen flex flex-col`}>
+      <body className={`${inter.className} min-w-screen flex flex-col`}>
         <Providers>
-          <div className="min-w-screen min-h-screen justify-center flex">
+          <div className="min-w-screen min-h-screen py-4 justify-center flex">
             {children}
           </div>
         </Providers>
