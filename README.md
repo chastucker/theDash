@@ -23,6 +23,7 @@ An application that stores users' patient data and displays it as a dashboard. U
       - BASE_URL - the base url for the server
    3. make a .env file in the web directory
       1. Add a `NEXT_PUBLIC_SERVER_BASE_URL` with your base url to your server
+      1. Add a `NEXT_PUBLIC_CONTACT_EMAIL` with your email to contact for authentication issues 
 5. start the project
    - Open up a terminal and run `cd server; npm run generateclient; npx prisma migrate:dev; npm run dev`
    - In another terminal window open `cd web; npm run dev`

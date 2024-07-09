@@ -34,6 +34,7 @@ import { formSchema, STATUS_OPTIONS } from "./constants";
 import { AddEditPatientCustomInput } from "./AddEditPatientCustomInput";
 import { getDefaultValues } from "./getDefaultValues";
 import { useToast } from "components/ui/use-toast";
+import { Spinner } from "components/ui/spinner";
 
 export function AddEditPatientForm({
   closeModal,
@@ -328,7 +329,7 @@ export function AddEditPatientForm({
           type="submit"
           disabled={isPending}
         >
-          {isPending ? "Submitting" : "Submit"}
+          {isPending ? <Spinner size="small" /> : "Submit"}
         </Button>
         <Button
           className="mt-4 bg-indigo-500 text-white hover:bg-indigo-600"

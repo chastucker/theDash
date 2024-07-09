@@ -29,6 +29,7 @@ import {
   SelectValue,
 } from "components/ui/select";
 import { useToast } from "components/ui/use-toast";
+import { Spinner } from "components/ui/spinner";
 
 const formSchema = z.object({
   id: z.string(),
@@ -116,7 +117,8 @@ export function AddEditCustomFieldForm({
       toast({
         title: "Column Added Successfully",
       });
-    } catch {
+    } catch(e) {
+      console.log(e)
       toast({
         title: "Error Adding Column",
         variant: "destructive",
@@ -267,7 +269,7 @@ export function AddEditCustomFieldForm({
             onClick={() => deleteCustomFieldById(id)}
             type="submit"
           >
-            Delete
+             {isPending ? <Spinner size="small" /> : "Delete"}
           </Button>
         )}
         <Button
@@ -280,9 +282,13 @@ export function AddEditCustomFieldForm({
           type="submit"
           disabled={isPending}
         >
-          {isPending ? "Submitting" : "Submit"}
+          {isPending ? <Spinner size="small" /> : "Submit"}
         </Button>
-        <Button className="mt-4 bg-indigo-500 text-white hover:bg-indigo-600" onClick={closeModal} type="button">
+        <Button
+          className="mt-4 bg-indigo-500 text-white hover:bg-indigo-600"
+          onClick={closeModal}
+          type="button"
+        >
           Close
         </Button>
       </div>

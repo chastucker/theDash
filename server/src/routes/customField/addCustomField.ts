@@ -52,8 +52,8 @@ export const addCustomField: Route = {
         },
       });
 
-      for (const patient of patients) {
-        await prismaTransaction.patientCustomField.upsert({
+      const upsertPromises = patients.map((patient) =>
+        prismaTransaction.patientCustomField.upsert({
           where: {
             patientId_customFieldId: {
               customFieldId: customField.id,
@@ -61,7 +61,7 @@ export const addCustomField: Route = {
             },
             patient: {
               userId,
-            }
+            },
           },
           create: {
             customFieldId: customField.id,
@@ -69,8 +69,10 @@ export const addCustomField: Route = {
             value: defaultValue ?? null,
           },
           update: {},
-        });
-      }
+        }),
+      );
+
+      await Promise.all(upsertPromises);
 
       return customField;
     });

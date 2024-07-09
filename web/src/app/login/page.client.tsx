@@ -15,6 +15,8 @@ import { Input } from "components/ui/input";
 import { Button } from "components/ui/button";
 import { usePostSignIn, usePostSignUp } from "generated_client";
 import { useRouter } from "next/navigation";
+import { Spinner } from "components/ui/spinner";
+import { useToast } from "components/ui/use-toast";
 
 export type AuthForm = z.infer<typeof authFormSchema>;
 
@@ -32,6 +34,7 @@ export function Login({
   const signIn = usePostSignIn();
   const signUp = usePostSignUp();
   const [isPendingForm, setIsPendingForm] = useState(false);
+  const { toast } = useToast();
 
   const form = useForm<AuthForm>({
     resolver: zodResolver(authFormSchema),
@@ -42,29 +45,45 @@ export function Login({
   });
 
   const handleSignIn = async (authForm: AuthForm) => {
-    setIsPendingForm(true);
-    const { refresh_token, access_token } = await signIn.mutateAsync({
-      data: authForm,
-    });
+    try {
+      setIsPendingForm(true);
+      const { refresh_token, access_token } = await signIn.mutateAsync({
+        data: authForm,
+      });
 
-    if (access_token && refresh_token) {
-      setCookies(access_token, refresh_token);
-      router.push("/");
+      if (access_token && refresh_token) {
+        setCookies(access_token, refresh_token);
+        router.push("/");
+      }
+    } catch {
+      toast({
+        title: "Error Signing In",
+        variant: "destructive",
+      });
+    } finally {
+      setIsPendingForm(false);
     }
-    setIsPendingForm(false);
   };
 
   const handleSignUp = async (authForm: AuthForm) => {
-    setIsPendingForm(true);
-    const { refresh_token, access_token } = await signUp.mutateAsync({
-      data: authForm,
-    });
+    try {
+      setIsPendingForm(true);
+      const { refresh_token, access_token } = await signUp.mutateAsync({
+        data: authForm,
+      });
 
-    if (refresh_token && access_token) {
-      setCookies(access_token, refresh_token);
-      router.push("/");
+      if (refresh_token && access_token) {
+        setCookies(access_token, refresh_token);
+        router.push("/");
+      }
+    } catch {
+      toast({
+        title: "Error Signing Up",
+        variant: "destructive",
+      });
+    } finally {
+      setIsPendingForm(false);
     }
-    setIsPendingForm(false);
   };
 
   return (
@@ -104,7 +123,7 @@ export function Login({
                 onClick={form.handleSubmit(handleSignIn)}
                 type="button"
               >
-                Sign in
+                {isPendingForm ? <Spinner size="small" /> : "Sign in"}
               </Button>
             </div>
             <div>
@@ -113,7 +132,7 @@ export function Login({
                 onClick={form.handleSubmit(handleSignUp)}
                 type="button"
               >
-                Sign up
+                {isPendingForm ? <Spinner size="small" /> : "Sign up"}
               </Button>
             </div>
           </div>

@@ -16,6 +16,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useToast } from "components/ui/use-toast";
 import Modal from "components/ui/modal";
 import { AddEditCustomFieldForm, AddEditPatientForm } from "components/forms";
+import { Spinner } from "components/ui/spinner";
 
 export function Dashboard() {
   const { data, isFetching, refetch } = useGetGetPatients();
@@ -128,7 +129,7 @@ export function Dashboard() {
       <div className="flex-row flex justify-between items-center">
         <div>
           <Button onClick={refetchPatients}>
-            {isFetching ? "Loading..." : "Refresh"}
+            {isFetching ? <Spinner size="small" /> : "Refresh"}
           </Button>
         </div>
         <div className="space-x-2">
