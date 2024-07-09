@@ -13,7 +13,7 @@ export default function Page() {
   return (
     <div className="flex-1 flex flex-col w-full sm:max-w-md justify-center gap-2 space-y-6">
       <div>
-        <h1 className="text-4xl text-center">The Dash</h1>
+        <h1 className="text-4xl text-center">Dashboard</h1>
       </div>
       <Login setCookies={setCookies} />
       <div>

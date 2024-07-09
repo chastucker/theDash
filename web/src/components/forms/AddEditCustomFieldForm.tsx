@@ -117,8 +117,7 @@ export function AddEditCustomFieldForm({
       toast({
         title: "Column Added Successfully",
       });
-    } catch(e) {
-      console.log(e)
+    } catch {
       toast({
         title: "Error Adding Column",
         variant: "destructive",
@@ -269,7 +268,7 @@ export function AddEditCustomFieldForm({
             onClick={() => deleteCustomFieldById(id)}
             type="submit"
           >
-             {isPending ? <Spinner size="small" /> : "Delete"}
+            {isPending ? <Spinner size="small" /> : "Delete"}
           </Button>
         )}
         <Button

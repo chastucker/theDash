@@ -38,7 +38,7 @@ export function Filters<TData, TValue>({
         />
         <FilterInput<TData> table={table} columnId="status" name="Status" />
       </div>
-      <div className="flex flex-row items-center justify-center space-x-2 space-y-0 py-4">
+      <div className="flex flex-row items-center justify-center space-x-2 py-4">
         <FilterInput<TData>
           table={table}
           columnId="dateOfBirth"
@@ -54,15 +54,20 @@ export function Filters<TData, TValue>({
           )
           .map((col) => (
             <FilterInput<TData>
-              key={col.id}
+              key={col.accessorKey}
               table={table}
               columnId={col.id}
               name={col.accessorKey}
             />
           ))}
       </div>
-      {otherColumnsChunks.map((group) => (
-        <div className="flex flex-row items-center justify-center space-x-2 space-y-0 py-4">
+      {otherColumnsChunks.map((group, i) => (
+        <div
+          key={i}
+          className={`flex flex-row items-center justify-center space-x-2 ${
+            i > 0 ? "pt-4" : ""
+          }`}
+        >
           {group
             .filter(
               (
@@ -74,7 +79,7 @@ export function Filters<TData, TValue>({
             )
             .map((col) => (
               <FilterInput<TData>
-                key={col.id}
+                key={col.accessorKey}
                 table={table}
                 columnId={col.id}
                 name={col.accessorKey}
