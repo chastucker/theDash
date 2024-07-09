@@ -335,6 +335,7 @@ export function AddEditPatientForm({
           className="mt-4 bg-indigo-500 text-white hover:bg-indigo-600"
           onClick={closeModal}
           type="button"
+          disabled={isPending}
         >
           Close
         </Button>

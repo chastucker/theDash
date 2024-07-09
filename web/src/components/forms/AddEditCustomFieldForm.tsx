@@ -284,6 +284,7 @@ export function AddEditCustomFieldForm({
           {isPending ? <Spinner size="small" /> : "Submit"}
         </Button>
         <Button
+          disabled={isPending}
           className="mt-4 bg-indigo-500 text-white hover:bg-indigo-600"
           onClick={closeModal}
           type="button"
